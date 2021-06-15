@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WorkOutAppApi.Server.Data.Models
+namespace WorkOutAppDatabase.Models
 {
     public class UserDetail
     {
@@ -23,6 +23,6 @@ namespace WorkOutAppApi.Server.Data.Models
         public int Weight { get; set; }
         [DisplayName("Kor")]
         public int Age { get; set; }
-        public virtual User User { get; set; }
+        public virtual ICollection<User> User { get; set; }
     }
 }

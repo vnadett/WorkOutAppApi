@@ -4,14 +4,13 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace WorkOutAppApi.Server.Data.Models
+namespace WorkOutAppApi.Shared.Models
 {
-    public class User
+    public class RegisterModel
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
         [MaxLength(50)]
         [DataType(DataType.EmailAddress, ErrorMessage = "Az email cím nem megfelelő!")]
@@ -32,5 +31,6 @@ namespace WorkOutAppApi.Server.Data.Models
         [DataType(DataType.Password)]
         [System.ComponentModel.DataAnnotations.Compare("Password")]
         public string ConfirmPassword { get; set; }
+        public string Error { get; set; }
     }
 }
