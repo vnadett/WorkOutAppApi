@@ -15,8 +15,16 @@ namespace WorkOutAppApi.Server.Controllers
         [HttpPost("Registration")]
         public async Task<ActionResult<RegisterModel>> Registration(RegisterModel newUser)
         {
-            RegisterModel user = DBHelper.Registration(newUser);
-            return await Task.FromResult(user);
+            try
+            {
+                RegisterModel user = DBHelper.Registration(newUser);
+                return await Task.FromResult(user);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
 
         }
     }

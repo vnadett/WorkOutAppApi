@@ -1,0 +1,113 @@
+﻿@page "/registration"
+
+@using WorkOutAppApi.Client.Contracts
+@using WorkOutAppApi.Shared.Models
+
+@inject IRegistrationRepository _regRepo
+@inject NavigationManager Nav
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<h4>Regisztráció</h4>
+<head>
+    <style>
+        .note {
+            text-align: center;
+            height: 80px;
+            background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+            color: #fff;
+            font-weight: bold;
+            line-height: 80px;
+        }
+
+        .form-content {
+            padding: 5%;
+            border: 1px solid #ced4da;
+            margin-bottom: 2%;
+        }
+
+        .form-control {
+            border-radius: 1.5rem;
+        }
+
+        .btnSubmit {
+            border: none;
+            border-radius: 1.5rem;
+            padding: 1%;
+            width: 20%;
+            cursor: pointer;
+            background: #fff;
+            color: #fff;
+        }
+
+        body {
+            background-image: url("https://4kwallpaper.wiki/wp-content/uploads/2019/06/164961.jpg");
+            background-color: #fff;
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        label {
+            color: #fff;
+        }
+
+        h4 {
+            color: #fff;
+        }
+    </style>
+</head>
+<div class="container register-form">
+
+    <EditForm Model="@regModel" OnValidSubmit="UserRegistration">
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <p style="color: #ff0000">@alert</p>
+        <div class="form-content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+
+                        <label for="email">Email cím</label>
+                        <InputText class="form-control" type="email" id="email" @bind-Value="@regModel.Email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Felhasználónév</label>
+                        <InputText class="form-control" id="username" @bind-Value="@regModel.UserName" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Password">Jelszó</label>
+                        <InputText class="form-control" type="password" id="Password" @bind-Value="@regModel.Password" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ConfirmPassword">Jelszó megerősítése</label>
+                        <InputText class="form-control" type="password" id="ConfirmPassword" @bind-Value="@regModel.ConfirmPassword" />
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dark">Regisztráció</button>
+        </div>
+    </EditForm>
+</div>
+
+
+@code {
+    private RegisterModel regModel = new RegisterModel();
+    private string alert;
+    protected async Task UserRegistration()
+    {
+        alert = "Regisztráció folyamatban...";
+        bool reg = await _regRepo.Create(Nav.BaseUri + "api/register/Registration", regModel);
+        if (reg)
+        {
+            Nav.NavigateTo("/login");
+        }
+        else
+        {
+            alert = "Ezzel az email címmel vagy felhasználónévvel már regisztráltak!";
+        }
+    }
+}

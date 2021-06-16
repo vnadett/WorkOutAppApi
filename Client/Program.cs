@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -11,6 +12,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using WorkOutAppApi.Client.Contracts;
+using WorkOutAppApi.Client.Services;
 
 namespace WorkOutAppApi.Client
 {
@@ -24,12 +27,10 @@ namespace WorkOutAppApi.Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddBlazoredSessionStorage();
 
-
-            builder.Services.AddScoped<DialogService>();
-
-            builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddTransient<ILoginRepository, LoginRepository>();
+            builder.Services.AddTransient<IRegistrationRepository, RegistrationRepository>();
             await builder.Build().RunAsync();
         }
     }

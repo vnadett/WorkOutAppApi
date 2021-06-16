@@ -25,7 +25,7 @@ namespace WorkOutAppDatabase
                 {
                     if (!UserNameOrEmailWasTaken(model.Email, model.UserName))
                     {
-                        return new RegisterModel { Error = "Ezen adatok valamelyikével már regisztráltak." };
+                        throw new Exception("Ezen adatok valamelyikével már regisztráltak.");
                     }
                     else
                     {
@@ -51,7 +51,7 @@ namespace WorkOutAppDatabase
             }
             catch (Exception)
             {
-                return new RegisterModel { Error = "Hiba lépett fel a regisztráció közben!" };
+                throw new Exception("Sikertelen regisztráció!");
 
             }
 
@@ -63,7 +63,7 @@ namespace WorkOutAppDatabase
             User userList = new User();
             using (_db)
             {
-                userList = _db.User.Where(w => w.Email == email && w.UserName == username).Select(s => s).FirstOrDefault();
+                userList = _db.User.Where(w => w.Email == email || w.UserName == username).Select(s => s).FirstOrDefault();
 
             }
             if (userList == null)
@@ -90,19 +90,19 @@ namespace WorkOutAppDatabase
                 using (_db)
                 {
                     User user = _db.User.Where(w => w.UserName == loginUser.UserName).Select(s => s).FirstOrDefault();
-                    if (BCrypt.Net.BCrypt.Verify(loginUser.Password, user.Password))
+                    if (user != null && BCrypt.Net.BCrypt.Verify(loginUser.Password, user.Password))
                     {
-                        return new LoginUser { UserName = user.UserName, Succes = true, Error = "Sikeres bejelentkezés" };
+                        return new LoginUser { Id = user.Id, UserName = user.UserName, Success = true, Error = "Sikeres bejelentkezés" };
                     }
                     else
                     {
-                        return new LoginUser { Error = "Sikertelen bejelentkezés", Succes = false };
+                        return new LoginUser { Error = "Sikertelen bejelentkezés", Success = false };
                     }
                 }
             }
             catch (Exception)
             {
-                return new LoginUser { Error = "Sikertelen bejelentkezés", Succes = false };
+                return new LoginUser { Error = "Sikertelen bejelentkezés", Success = false };
             }
         }
         #endregion

@@ -32,5 +32,6 @@ namespace WorkOutAppApi.Shared.Models
         [System.ComponentModel.DataAnnotations.Compare("Password")]
         public string ConfirmPassword { get; set; }
         public string Error { get; set; }
+        public bool Success { get; set; }
     }
 }

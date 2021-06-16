@@ -1,5 +1,8 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">WorkOutAppApi</a>
+﻿@inject NavigationManager Nav
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Workout</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -12,20 +15,32 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
+        @if (!loggedIn)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="login">
+                    <span class="oi oi-account-login" aria-hidden="true"></span> Bejelentkezés
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="registration">
+                    <span class="oi oi-people" aria-hidden="true"></span> Regisztráció
+                </NavLink>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="login" @onclick="LogOut">
+                    <span class="oi oi-account-logout" aria-hidden="true"></span> Kijelentkezés
+                </NavLink>
+            </li>
+        }
     </ul>
 </div>
 
 @code {
+    private bool loggedIn;
     private bool collapseNavMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -33,5 +48,16 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        loggedIn = await sessionStorage.GetItemAsync<bool>("success");
+    }
+    private async void LogOut()
+    {
+        await sessionStorage.RemoveItemAsync("success");
+        await sessionStorage.RemoveItemAsync("username");
+        await sessionStorage.RemoveItemAsync("id");
+
     }
 }

@@ -1,0 +1,119 @@
+﻿@page "/login"
+
+@using WorkOutAppApi.Client.Contracts
+@using WorkOutAppApi.Shared.Models
+
+@inject ILoginRepository _loginRepo
+@inject NavigationManager Nav
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+    <head>
+        <style>
+            html, body {
+                background-image: url('https://i.pinimg.com/originals/32/f8/2d/32f82de556a88851c0e52005b84ee959.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                height: 100%;
+                font-family: 'Numans', sans-serif;
+            }
+
+            .container {
+                height: 100%;
+                align-content: center;
+            }
+
+            .card {
+                height: 370px;
+                margin-top: auto;
+                margin-bottom: auto;
+                width: 400px;
+                background-color: rgba(0,0,0,0.5) !important;
+            }
+
+            .card-header h3 {
+                color: white;
+            }
+
+            .social_icon {
+                position: absolute;
+                right: 20px;
+                top: -45px;
+            }
+
+            .input-group-prepend span {
+                width: 50px;
+                background-color: #FFC312;
+                color: black;
+                border: 0 !important;
+            }
+
+            input:focus {
+                outline: 0 0 0 0 !important;
+                box-shadow: 0 0 0 0 !important;
+            }
+
+            .login_btn {
+                color: black;
+                background-color: #FFC312;
+                width: 100px;
+            }
+
+                .login_btn:hover {
+                    color: black;
+                    background-color: white;
+                }
+        </style>
+    </head>
+    <div class="container">
+        <div class="d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Bejelentkezés</h3>
+                </div>
+                <div class="card-body">
+                    <p style="color: #ff0000">@alert</p>
+                    <EditForm Model="@loginUser" OnSubmit="@UserLogin">
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="oi oi-person"></i></span>
+                            </div>
+                            <InputText id="UserName" type="text" class="input" @bind-Value="loginUser.UserName" required />
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="oi oi-key"></i></span>
+                            </div>
+                            <InputText id="Password" type="password" class="input" data-type="password" @bind-Value="loginUser.Password" required />
+                        </div>
+                        <div class="input-group form-group">
+                            <input type="submit" value="Belépés" class="btn float-right login_btn">
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @code {
+        private LoginUser loginUser = new LoginUser();
+        private string alert;
+        protected async Task UserLogin()
+        {
+            alert = "Bejelentkezés folyamatban...";
+            LoginUser u = new LoginUser();
+
+            u = await _loginRepo.PostAndGet(Nav.BaseUri + "api/login/Login", loginUser);
+            if (u.Success)
+            {
+
+                await sessionStorage.SetItemAsync("id", u.Id);
+                await sessionStorage.SetItemAsync("username", u.UserName);
+                await sessionStorage.SetItemAsync("success", u.Success);
+
+                Nav.NavigateTo("/profile");
+            }
+            else
+            {
+                alert = u.Error;
+            }
+        }
+    }

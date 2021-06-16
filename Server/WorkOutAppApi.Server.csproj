@@ -5,10 +5,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\WorkOutAppDatabase\WorkOutDb.cs" Link="WorkOutDb.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.7" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
 		<PackageReference Include="Blazored.SessionStorage" Version="1.0.13" />

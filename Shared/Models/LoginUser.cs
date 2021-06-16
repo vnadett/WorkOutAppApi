@@ -10,6 +10,7 @@ namespace WorkOutAppApi.Shared.Models
 {
     public class LoginUser
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(200)]
         [DisplayName("Felhasználónév")]
@@ -21,6 +22,6 @@ namespace WorkOutAppApi.Shared.Models
         public string Password { get; set; }
 
         public string Error { get; set; }
-        public bool Succes { get; set; }
+        public bool Success { get; set; }
     }
 }
